@@ -23,20 +23,17 @@ This repository already vendors Cordis, so you do not need to create another npm
 pnpm install
 ```
 
-The official tutorial keeps its temporary files in `tmp/cordis-tutorial`, which Git ignores. You can edit it as often as you like:
+The runnable sources live in [leanring-project/cordis-demos](../../cordis-demos/). Each chapter and subsection has its own directory, so changing one exercise does not replace another. Run these commands from the repository root:
 
 ```sh
-mkdir -p tmp/cordis-tutorial
-cd tmp/cordis-tutorial
+(cd leanring-project/cordis-demos/02-first-plugin && node --import tsx ../../../vendor/cordis/bin.js)
+(cd leanring-project/cordis-demos/03-services-and-context && node --import tsx ../../../vendor/cordis/bin.js)
+(cd leanring-project/cordis-demos/04-events-and-lifecycle/01-emit && node --import tsx ../../../../vendor/cordis/bin.js)
+(cd leanring-project/cordis-demos/04-events-and-lifecycle/02-waterfall && node --import tsx ../../../../vendor/cordis/bin.js)
+(cd leanring-project/cordis-demos/04-events-and-lifecycle/03-effect && node --import tsx ../../../../vendor/cordis/bin.js)
 ```
 
-Run each standalone example with this launcher:
-
-```sh
-node --import tsx ../../vendor/cordis/bin.js
-```
-
-The command creates a root `Context`, mounts the Loader, and reads `cordis.yml` from the current directory. You do not write startup boilerplate in each exercise: the configuration and plugins are the application. If Node or dependency errors occur, first consult the repository’s [development setup](../../docs/development.md#setup-tutorial) rather than assuming the example is wrong.
+Each command creates a root `Context`, mounts the Loader, and reads `cordis.yml` from that example directory. You do not write startup boilerplate in each exercise: the configuration and plugins are the application. If Node or dependency errors occur, first consult the repository’s [development setup](../../../docs/development.md#setup-tutorial) rather than assuming the example is wrong.
 
 ## A comfortable study rhythm
 
@@ -56,10 +53,10 @@ These notes explain the learning path and intuition; the repository’s maintain
 
 | Question | Start here |
 |---|---|
-| I want a complete hands-on exercise | [Cordis tutorial](../../docs/cordis-tutorial/index.md) |
-| I need a quick concept lookup | [Cordis primer](../../docs/cordis-primer.md) |
-| I need the exact Context, event, or Service API | [Cordis API](../../docs/cordis-api/context.md) |
-| I want to see the services and events registered by Harness | [Core subsystem reference](../../docs/subsystems/core.md) |
+| I want a complete hands-on exercise | [Cordis tutorial](../../../docs/cordis-tutorial/index.md) |
+| I need a quick concept lookup | [Cordis primer](../../../docs/cordis-primer.md) |
+| I need the exact Context, event, or Service API | [Cordis API](../../../docs/cordis-api/context.md) |
+| I want to see the services and events registered by Harness | [Core subsystem reference](../../../docs/subsystems/core.md) |
 | I want a source-reading route | [Architecture Guide](../架构导读.md) and chapter 05 |
 
 The next chapter starts with the most important task: drawing what an “application” looks like to Cordis.

@@ -34,7 +34,7 @@ flowchart TB
 
 ## 从 profile 配置开始，而不是从某个随机类开始
 
-推荐先打开 [`examples/headless-agent/cordis.yml`](../../examples/headless-agent/cordis.yml)。不要试图读完每段注释；先把条目按角色分组：
+推荐先打开 [`examples/headless-agent/cordis.yml`](../../../examples/headless-agent/cordis.yml)。不要试图读完每段注释；先把条目按角色分组：
 
 | 配置中的典型条目 | Cordis 角色 | 在 Agent 中的意义 |
 |---|---|---|
@@ -61,8 +61,8 @@ declare module '@deepseek-ai/cordis' {
 
 这比从 `apply()` 开始盲读更快，因为它立刻告诉你“这个包向其他插件公开了什么”。例如：
 
-- [`packages/llm/llm/src/index.ts`](../../packages/llm/llm/src/index.ts) 声明 `ctx.llm: LlmRuntime`。
-- [`packages/core/tools/src/index.ts`](../../packages/core/tools/src/index.ts) 声明 `ctx.tools: ToolRuntime`。
+- [`packages/llm/llm/src/index.ts`](../../../packages/llm/llm/src/index.ts) 声明 `ctx.llm: LlmRuntime`。
+- [`packages/core/tools/src/index.ts`](../../../packages/core/tools/src/index.ts) 声明 `ctx.tools: ToolRuntime`。
 - 会话、系统提示词、Agent 注册表等核心包也以同一模式声明各自的 Context 服务。
 
 接着搜索该服务名的 `inject` 和 `ctx.<服务名>` 调用。你会得到一条真实的依赖路线：谁提供、谁消费、哪一些插件只是通过事件插入处理。
@@ -87,7 +87,7 @@ flowchart LR
 2. `llm/stream` 是 waterfall 事件。重试、路由、回放等插件可以在真正流式调用的外层工作；普通协作监听器必须调用 `next()`。
 3. 模型请求不是凭空拼一段字符串：系统提示词、Session 投影得到的历史消息、当前工具描述共同形成请求。任何让模型看见的新信息，都要能从会话记录或确定的投影中重建。
 
-如果你想顺着一条真实路径读，打开 [`packages/core/agent-loop/src/agent.ts`](../../packages/core/agent-loop/src/agent.ts)，先找 `preStep()`：它领取输入、组装系统提示词和运行时上下文，并经 `agent/pre-step` waterfall 让插件参与决定。随后再找模型请求和工具调用执行的位置。第一遍不必理解每个错误处理分支，只跟住“输入从哪里来、什么被记录、什么时候交给 `ctx.llm`”。
+如果你想顺着一条真实路径读，打开 [`packages/core/agent-loop/src/agent.ts`](../../../packages/core/agent-loop/src/agent.ts)，先找 `preStep()`：它领取输入、组装系统提示词和运行时上下文，并经 `agent/pre-step` waterfall 让插件参与决定。随后再找模型请求和工具调用执行的位置。第一遍不必理解每个错误处理分支，只跟住“输入从哪里来、什么被记录、什么时候交给 `ctx.llm`”。
 
 ## `ctx.tools`：模型只能请求，运行时才真正执行
 
@@ -120,7 +120,7 @@ sequenceDiagram
 - `tools/result` 是 `emit`；日志、UI、遥测等可观察结果，而执行方不需要知道它们。
 - 工具注册属于 lifecycle-managed effect；卸载工具插件时，它从模型可用工具列表中消失。
 
-若你要学习如何新增工具，先看[添加工具指南](../../docs/cookbook/adding-a-tool.zh.md)，再看一个小的既有工具包。不要先改 Agent Loop；大多数新能力都应该通过工具服务和已定义的事件扩展点接入。
+若你要学习如何新增工具，先看[添加工具指南](../../../docs/cookbook/adding-a-tool.zh.md)，再看一个小的既有工具包。不要先改 Agent Loop；大多数新能力都应该通过工具服务和已定义的事件扩展点接入。
 
 ## Session：不是 Cordis EventBus，而是 Agent 的持久事实记录
 
@@ -146,7 +146,7 @@ Cordis 负责把会话能力作为插件提供、把生命周期和事件连接�
 当你想把静态代码变成脑中的动态流程，按这条路径跟读：
 
 1. 从 CLI 或 Web 应用把用户消息放进 Agent 的 Inbox 开始。
-2. 在 [`ReactLoopAgent`](../../packages/core/agent-loop/src/agent.ts) 中找 `turn()` 和 `preStep()`，看它如何领取输入和写入 `turn/start`。
+2. 在 [`ReactLoopAgent`](../../../packages/core/agent-loop/src/agent.ts) 中找 `turn()` 和 `preStep()`，看它如何领取输入和写入 `turn/start`。
 3. 看系统提示词和 Session 如何组成模型请求，再进入 `ctx.llm` 的流式调用。
 4. 若模型要求工具，跟到 Agent Loop 的工具调用执行，再进入 `ctx.tools` 的事件流水线。
 5. 看工具结果如何追加到 Session，之后为什么又会触发下一次模型请求。

@@ -24,6 +24,7 @@ const PATTERNS = [
   'packages/*/*.md',
   'packages/*/*/*.md',
   'examples/**/*.md',
+  'leanring-project/**/*.md',
   'AGENTS.md',
   'packages/AGENTS.md',
   '.agents/skills/**/*.md',

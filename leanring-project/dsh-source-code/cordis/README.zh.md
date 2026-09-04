@@ -23,20 +23,17 @@
 pnpm install
 ```
 
-官方教程中的临时文件放在 `tmp/cordis-tutorial`，它已被 Git 忽略；你可以放心反复修改：
+可运行的源码放在 [leanring-project/cordis-demos](../../cordis-demos/) 中。每章、每小节使用独立目录，修改一个练习时不会覆盖其他练习。请从仓库根目录运行：
 
 ```sh
-mkdir -p tmp/cordis-tutorial
-cd tmp/cordis-tutorial
+(cd leanring-project/cordis-demos/02-first-plugin && node --import tsx ../../../vendor/cordis/bin.js)
+(cd leanring-project/cordis-demos/03-services-and-context && node --import tsx ../../../vendor/cordis/bin.js)
+(cd leanring-project/cordis-demos/04-events-and-lifecycle/01-emit && node --import tsx ../../../../vendor/cordis/bin.js)
+(cd leanring-project/cordis-demos/04-events-and-lifecycle/02-waterfall && node --import tsx ../../../../vendor/cordis/bin.js)
+(cd leanring-project/cordis-demos/04-events-and-lifecycle/03-effect && node --import tsx ../../../../vendor/cordis/bin.js)
 ```
 
-每一节的独立示例都可以用下面的启动器运行：
-
-```sh
-node --import tsx ../../vendor/cordis/bin.js
-```
-
-这条命令会创建根 `Context`，挂载 Loader，并从当前目录读取 `cordis.yml`。你不需要在自己的文件里手写“启动 Cordis”的样板代码；配置文件和插件就是应用本身。若命令报出依赖或 Node 版本问题，先回到仓库的[开发环境说明](../../docs/development.zh.md#setup-tutorial)处理，不要急着从示例代码里找错。
+每条命令都会创建根 `Context`，挂载 Loader，并从对应示例目录读取 `cordis.yml`。你不需要在自己的文件里手写“启动 Cordis”的样板代码；配置文件和插件就是应用本身。若命令报出依赖或 Node 版本问题，先回到仓库的[开发环境说明](../../../docs/development.zh.md#setup-tutorial)处理，不要急着从示例代码里找错。
 
 ## 一个舒服的学习节奏
 
@@ -56,10 +53,10 @@ node --import tsx ../../vendor/cordis/bin.js
 
 | 想解决的问题 | 优先阅读 |
 |---|---|
-| 想从零做一遍完整练习 | [Cordis 官方教程](../../docs/cordis-tutorial/index.zh.md) |
-| 想快速查某个概念 | [Cordis 入门](../../docs/cordis-primer.zh.md) |
-| 想查 Context、事件、Service 的精确 API | [Cordis API](../../docs/cordis-api/context.zh.md) |
-| 想看 Harness 里实际注册的服务和事件 | [core 子系统参考](../../docs/subsystems/core.zh.md) |
+| 想从零做一遍完整练习 | [Cordis 官方教程](../../../docs/cordis-tutorial/index.zh.md) |
+| 想快速查某个概念 | [Cordis 入门](../../../docs/cordis-primer.zh.md) |
+| 想查 Context、事件、Service 的精确 API | [Cordis API](../../../docs/cordis-api/context.zh.md) |
+| 想看 Harness 里实际注册的服务和事件 | [core 子系统参考](../../../docs/subsystems/core.zh.md) |
 | 想知道源码从哪里开始读 | [架构导读](../架构导读.md)和第 05 篇 |
 
 下一篇从最重要的一件事开始：先把 Cordis 眼中的“应用”画出来。

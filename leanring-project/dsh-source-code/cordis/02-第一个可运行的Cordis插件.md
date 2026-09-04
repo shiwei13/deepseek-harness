@@ -7,7 +7,7 @@
 完成后，目录里只有两个文件：一个插件和一个配置。运行启动器后，终端会打印一行文字。
 
 ```text
-tmp/cordis-tutorial/
+leanring-project/cordis-demos/02-first-plugin/
 ├── cordis.yml
 └── hello.ts
 ```
@@ -29,11 +29,10 @@ flowchart LR
 在仓库根目录执行：
 
 ```sh
-mkdir -p tmp/cordis-tutorial
-cd tmp/cordis-tutorial
+cd leanring-project/cordis-demos/02-first-plugin
 ```
 
-这里使用 `tmp/` 的原因很朴素：练习产生的文件不该混进产品源码，也不会进入 Git。后面每次示例都在这个目录替换文件；想保留自己的版本时，可以复制到另一个临时目录。
+这个目录已经包含本章的[可运行代码](../../cordis-demos/02-first-plugin/)。所有学习示例都集中在 `leanring-project/cordis-demos/`，并按章节分开保存；顶层 `tsconfig.json` 也会让编辑器从仓库工作区解析 `@deepseek-ai/cordis` 的类型。
 
 ## 第 1 步：写一个最小插件
 
@@ -69,7 +68,7 @@ YAML 中这一项的含义是“挂载这个模块提供的插件”。`name` �
 现在运行：
 
 ```sh
-node --import tsx ../../vendor/cordis/bin.js
+node --import tsx ../../../vendor/cordis/bin.js
 ```
 
 预期输出：
@@ -123,7 +122,7 @@ export function apply(ctx: Context, config: Config) {
 你好，小王。今天从一个插件开始。
 ```
 
-这说明 Loader 会把 `config` 传给 `apply`。不过这里的 `Config` 只是 TypeScript 类型，它在运行时不存在，也不会验证 YAML。现在传错类型，例如 `who: [1, 2]`，这个简陋版本仍会运行，只是行为未必符合预期。真正的配置校验需要导出运行时 schema；官方教程的[配置章节](../../docs/cordis-tutorial/05-config.zh.md)会完整介绍。现在先知道一条原则：**类型注解帮助写代码，schema 才负责拦住用户配置。**
+这说明 Loader 会把 `config` 传给 `apply`。不过这里的 `Config` 只是 TypeScript 类型，它在运行时不存在，也不会验证 YAML。现在传错类型，例如 `who: [1, 2]`，这个简陋版本仍会运行，只是行为未必符合预期。真正的配置校验需要导出运行时 schema；官方教程的[配置章节](../../../docs/cordis-tutorial/05-config.zh.md)会完整介绍。现在先知道一条原则：**类型注解帮助写代码，schema 才负责拦住用户配置。**
 
 ## 三个值得立刻尝试的小实验
 
@@ -183,6 +182,6 @@ export function apply(ctx: Context) {
 
 ## 收尾：把练习和 Harness 连起来
 
-Harness 的 profile 配置，例如 [`examples/headless-agent/cordis.yml`](../../examples/headless-agent/cordis.yml)，本质上就是这份两行 YAML 的大型版本：每一行选择一个插件，最终组合出 LLM、工具、会话和应用入口。差别不在机制，而在插件数量和服务依赖图。
+Harness 的 profile 配置，例如 [`examples/headless-agent/cordis.yml`](../../../examples/headless-agent/cordis.yml)，本质上就是这份两行 YAML 的大型版本：每一行选择一个插件，最终组合出 LLM、工具、会话和应用入口。差别不在机制，而在插件数量和服务依赖图。
 
 下一篇会构造第一个真正会协作的例子：一个插件提供 `greeter` 服务，另一个插件声明依赖它并调用它。到那时，`ctx` 才会从“传进来的参数”变成很具体的工作台。
