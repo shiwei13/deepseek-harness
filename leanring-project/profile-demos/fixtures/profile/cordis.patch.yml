@@ -1,0 +1,5 @@
+- id: learning-observer
+  config:
+    source: profile
+    profileOnly: this-key-replaces-featureOnly
+

@@ -1,0 +1,5 @@
+- id: learning-observer
+  config:
+    source: command-line-overlay
+    overlayOnly: this-is-the-final-config
+

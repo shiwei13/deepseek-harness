@@ -1,0 +1,5 @@
+- id: learning-observer
+  config:
+    source: home
+    homeOnly: this-key-replaces-profileOnly
+

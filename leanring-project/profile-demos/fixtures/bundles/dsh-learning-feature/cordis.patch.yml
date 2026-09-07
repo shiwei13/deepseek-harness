@@ -1,0 +1,6 @@
+- id: learning-observer
+  name: dsh-learning-base
+  config:
+    source: bundle-feature
+    featureOnly: this-key-replaces-baseOnly
+

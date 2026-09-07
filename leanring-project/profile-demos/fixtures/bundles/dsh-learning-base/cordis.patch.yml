@@ -1,0 +1,7 @@
+- insert:
+    - id: learning-observer
+      name: dsh-learning-base
+      config:
+        source: bundle-base
+        baseOnly: this-key-exists-only-in-the-base-layer
+

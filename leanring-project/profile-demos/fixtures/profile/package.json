@@ -1,0 +1,17 @@
+{
+  "name": "dsh-profile-learning",
+  "private": true,
+  "dependencies": {
+    "dsh-learning-base": "0.0.0",
+    "dsh-learning-feature": "0.0.0"
+  },
+  "dsh": {
+    "profile": {
+      "bundles": [
+        "dsh-learning-base",
+        "dsh-learning-feature"
+      ]
+    }
+  }
+}
+
