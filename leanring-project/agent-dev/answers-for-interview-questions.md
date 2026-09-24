@@ -231,7 +231,7 @@ turn/end → status idle
 ## 可能的追问及回答
 
 **Q:怎么防止死循环?**
-三道防线:①最大步数 / token 预算上限,硬性兜底;②重复动作检测——同一个动作或同一个报错反复出现,就判定卡住,终止或强制换策略;③超时。生产里通常三者叠加。
+见下文独立题目「[如何检测并终止 Agent 的重复调用、无效反思和死循环？](#如何检测并终止-agent-的重复调用无效反思和死循环)」：区分重复动作、缺少进展和硬预算，并说明提醒与终止的不同责任。
 
 **Q:观察环节如果拿到的是脏数据 / 幻觉怎么办?**
 关键原则是**观察必须来自真实环境而非模型自述**。工程上要保证工具返回是结构化、可信的真实结果(exit code、真实 stdout、真实 API response),而不是让模型「假装」执行。反思阶段再对观察做一次校验(比如断言测试真的跑过、文件真的改了),避免把幻觉当事实喂进下一轮。
@@ -501,3 +501,27 @@ dsh 的架构铁律是「everything is a plugin，新增行为挂到文档化的
 ## 一句话收尾
 
 > 三段流转都落在日志里、各有明确的提交点：拆解靠 `todo_write` 整表替换，确认靠 `exit_plan_mode` 精确 review，模式切换靠「pending 挂起 → 在 pre-step 步骤边界 commit」并且 **append 成功才清挂起**——这样才做到「续跑不丢、状态可回放」。
+
+# 如何检测并终止 Agent 的重复调用、无效反思和死循环？
+
+## 总结
+
+- 对连续相同的工具名和规范化参数计数，可先提醒模型换参数、换方法或结束；单凭调用重复不能证明无进展，提醒也不是硬终止。
+- 对最近的动作与观察结果一起比较，识别相同结果、持续报错及交替循环；连续只有 Agent 消息而无动作可识别空转，但不能据此判定反思内容的语义质量。
+- **建议：**用测试结果、文件差异等可验证变化判断反思是否带来进展；提醒后仍无进展就停机并报告原因，以步数或费用上限兜底。
+
+## 细节
+
+### DeepSeek Harness
+
+- **重复调用提醒：**`repeat-tool-reminder` 对同一 agent 连续同名、同参数调用计数：第 3 次追加“先检查上次结果，必要时换方法”的提示消息；第 5、8 次还列出工具名、次数和参数。这里的“注入”只是给模型增加文字提醒，不会修改工具参数。[源码](../../packages/guard/repeat-tool-reminder/src/index.ts#L59-L78)（`fb00aac9b0`）
+- **作用范围：**提示通过 `tools/post-execute` 的 `additionalContexts` 传递；插件仍调用 `next()`，所以不能强制停机。新用户消息会清除连续计数。[源码](../../packages/guard/repeat-tool-reminder/src/index.ts#L189-L231)（`fb00aac9b0`）
+
+### OpenHands Software Agent SDK
+
+- **循环检测：**`StuckDetector` 对近期事件检查重复动作与观察、相同报错、交替动作及连续 agent 消息；相同报错达到阈值时先发一次纠错提示，再继续重复才判定卡住。[源码](https://github.com/OpenHands/software-agent-sdk/blob/main/openhands-sdk/openhands/sdk/conversation/stuck_detector.py)
+- **执行器停机：**`LocalConversation` 把纠错提示写成环境消息，检测器判定卡住时将状态设为 `STUCK`；独白检测只计数，不比较反思内容是否有新证据。[源码](https://github.com/OpenHands/software-agent-sdk/blob/main/openhands-sdk/openhands/sdk/conversation/impl/local_conversation.py)；[独白检测](https://github.com/OpenHands/software-agent-sdk/blob/main/openhands-sdk/openhands/sdk/conversation/stuck_detector.py)
+
+### LangGraph
+
+- **硬上限：**Pregel 循环在步数超过 `stop` 时标记 `out_of_steps` 并退出，防止未识别的循环无限执行；达到上限只说明预算耗尽，不证明任务无解。[源码](https://github.com/langchain-ai/langgraph/blob/main/libs/langgraph/langgraph/pregel/_loop.py)
